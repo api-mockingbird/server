@@ -1,5 +1,6 @@
-import app from './app';
 import http from 'http';
+
+import app from './app';
 
 const port = normalizePort(process.env.PORT || '4000');
 const server = http.createServer(app);
