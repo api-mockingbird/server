@@ -8,14 +8,23 @@ datasource db {
 }
 
 model User {
-  id             String          @id @default(uuid())
-  createdAt      DateTime        @default(now())
-  isTemp         Boolean         @default(false)
-  mockEndpoints  MockEndpoint[]
+  id            String         @id @default(uuid())
+  createdAt     DateTime       @default(now())
+  isTemp        Boolean        @default(false)
+  mockEndpoints MockEndpoint[]
 }
 
 model MockEndpoint {
-  id      Int     @id @default(autoincrement())
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId  String
+  id                  Int    @id @default(autoincrement())
+  user                User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId              String
+  responseName        String
+  httpMethod          String
+  urlPath             String
+  httpStatus          Int
+  responseContentType String
+  charset             String
+  httpHeaders         String @default("")
+  httpResponseBody    String @default("")
+  timeout             Int    @default(0)
 }
