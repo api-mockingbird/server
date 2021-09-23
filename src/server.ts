@@ -8,9 +8,9 @@ import app from './app';
 import { context } from './context';
 import { schema } from './schema';
 
-startApolloServer();
+startServer();
 
-async function startApolloServer() {
+async function startServer() {
   const port = normalizePort(process.env.PORT || '4000');
   const httpServer = http.createServer(app);
   const server = new ApolloServer({
