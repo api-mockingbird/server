@@ -23,10 +23,10 @@ const User = objectType({
     t.nonNull.boolean('isTemp');
     t.list.field('mockEndpoints', {
       type: MockEndpoint,
-      resolve: (parent, _args, ctx: Context) => {
-        return ctx.prisma.user
+      resolve: ({ id }, _, { prisma }: Context) => {
+        return prisma.user
           .findUnique({
-            where: { id: parent.id },
+            where: { id },
           })
           .mockEndpoints();
       },
@@ -58,9 +58,9 @@ const Query = queryType({
       args: {
         data: nonNull(arg({ type: UserGetInput })),
       },
-      resolve: (_parent, args, ctx: Context) => {
-        return ctx.prisma.user.findUnique({
-          where: { id: args.data.id },
+      resolve: (_, { data }, { prisma }: Context) => {
+        return prisma.user.findUnique({
+          where: { id: data.id },
         });
       },
     });
@@ -74,11 +74,11 @@ const Mutation = mutationType({
       args: {
         data: arg({ type: UserCreateInput }),
       },
-      resolve: (_parent, args, ctx: Context) => {
-        return ctx.prisma.user.create({
+      resolve: (_, { data }, { prisma }: Context) => {
+        return prisma.user.create({
           data: {
-            id: args.data?.id ?? undefined,
-            isTemp: args.data?.isTemp ?? undefined,
+            id: data?.id ?? undefined,
+            isTemp: data?.isTemp ?? undefined,
           },
         });
       },
@@ -90,11 +90,11 @@ const Mutation = mutationType({
         data: nonNull(arg({ type: MockEndpointCreateInput })),
         userId: nonNull(stringArg()),
       },
-      resolve: (_parent, args, context: Context) => {
-        return context.prisma.mockEndpoint.create({
+      resolve: (_, { userId, data }, { prisma }: Context) => {
+        return prisma.mockEndpoint.create({
           data: {
-            userId: args.userId,
-            ...args.data,
+            userId,
+            ...data,
           },
         });
       },
