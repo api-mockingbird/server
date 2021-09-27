@@ -110,10 +110,11 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     createMockInput: NexusGenRootTypes['MockEndpoint']; // MockEndpoint!
+    removeUser: NexusGenRootTypes['User']; // User!
     signupUser: NexusGenRootTypes['User']; // User!
   }
   Query: { // field return type
-    getUserWithMockEndpoints: NexusGenRootTypes['User'] | null; // User
+    getUser: NexusGenRootTypes['User'] | null; // User
   }
   User: { // field return type
     createdAt: NexusGenScalars['DateTime']; // DateTime!
@@ -139,10 +140,11 @@ export interface NexusGenFieldTypeNames {
   }
   Mutation: { // field return type name
     createMockInput: 'MockEndpoint'
+    removeUser: 'User'
     signupUser: 'User'
   }
   Query: { // field return type name
-    getUserWithMockEndpoints: 'User'
+    getUser: 'User'
   }
   User: { // field return type name
     createdAt: 'DateTime'
@@ -163,8 +165,8 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
-    getUserWithMockEndpoints: { // args
-      data: NexusGenInputs['UserGetInput']; // UserGetInput!
+    getUser: { // args
+      data?: NexusGenInputs['UserGetInput'] | null; // UserGetInput
     }
   }
 }

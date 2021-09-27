@@ -1,13 +1,13 @@
 import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
 
+import db from './db';
+
 export interface Context {
-  prisma: PrismaClient;
+  db: PrismaClient;
   req: Request;
   res: Response;
 }
-
-const prisma = new PrismaClient();
 
 export const context = ({
   req,
@@ -17,7 +17,7 @@ export const context = ({
   res: Response;
 }): Context => {
   return {
-    prisma,
+    db,
     req,
     res,
   };

@@ -12,10 +12,17 @@ import {
 } from 'nexus';
 
 import { Context } from './context';
+import { NexusGenObjects } from './generated/nexus';
+import {
+  createMockEndpoint,
+  getMockEndpointsByUserId,
+} from './service/mock-endpoint';
+import { createUser, deleteUserById, getUserById } from './service/user';
+import { encode } from './utils/jwt';
 
 export const DateTime = asNexusMethod(DateTimeResolver, 'date');
 
-const User = objectType({
+export const User = objectType({
   name: 'User',
   definition(t) {
     t.nonNull.string('id');
@@ -23,12 +30,8 @@ const User = objectType({
     t.nonNull.boolean('isTemp');
     t.list.field('mockEndpoints', {
       type: MockEndpoint,
-      resolve: ({ id }, _, { prisma }: Context) => {
-        return prisma.user
-          .findUnique({
-            where: { id },
-          })
-          .mockEndpoints();
+      resolve: ({ id: userId }, _, { db }: Context) => {
+        return getMockEndpointsByUserId(db, userId);
       },
     });
   },
@@ -53,15 +56,48 @@ const MockEndpoint = objectType({
 
 const Query = queryType({
   definition(t) {
-    t.field('getUserWithMockEndpoints', {
+    t.field('getUser', {
       type: User,
       args: {
-        data: nonNull(arg({ type: UserGetInput })),
+        data: arg({ type: UserGetInput }),
       },
-      resolve: (_, { data }, { prisma }: Context) => {
-        return prisma.user.findUnique({
-          where: { id: data.id },
-        });
+      resolve: async (_, __, { db, req, res }: Context) => {
+        const createTempUser = async () => {
+          const user = await createUser(db, {
+            id: undefined,
+            isTemp: true,
+          });
+
+          return user;
+        };
+
+        const setAccessToken = (user: NexusGenObjects['User']) => {
+          let accessToken;
+
+          try {
+            accessToken = encode(user);
+          } catch (e) {
+            throw e;
+          }
+
+          res.cookie('accessToken', accessToken, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60, // 1 hour
+          });
+        };
+
+        if (!req.user) {
+          const newTempUser = await createTempUser();
+          setAccessToken(newTempUser);
+
+          return newTempUser;
+        }
+
+        try {
+          return getUserById(db, req.user.id);
+        } catch (e) {
+          throw e;
+        }
       },
     });
   },
@@ -74,13 +110,18 @@ const Mutation = mutationType({
       args: {
         data: arg({ type: UserCreateInput }),
       },
-      resolve: (_, { data }, { prisma }: Context) => {
-        return prisma.user.create({
-          data: {
-            id: data?.id ?? undefined,
-            isTemp: data?.isTemp ?? undefined,
-          },
-        });
+      resolve: (_, { data }, { db }: Context) => {
+        return createUser(db, data);
+      },
+    });
+
+    t.nonNull.field('removeUser', {
+      type: User,
+      resolve: async (_, __, { db, req, res }: Context) => {
+        const deletedUser = await deleteUserById(db, req.user!.id);
+        res.clearCookie('accessToken');
+
+        return deletedUser;
       },
     });
 
@@ -90,13 +131,8 @@ const Mutation = mutationType({
         data: nonNull(arg({ type: MockEndpointCreateInput })),
         userId: nonNull(stringArg()),
       },
-      resolve: (_, { userId, data }, { prisma }: Context) => {
-        return prisma.mockEndpoint.create({
-          data: {
-            userId,
-            ...data,
-          },
-        });
+      resolve: (_, { userId, data }, { db }: Context) => {
+        return createMockEndpoint(db, userId, data);
       },
     });
   },
