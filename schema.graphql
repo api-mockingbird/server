@@ -35,11 +35,12 @@ input MockEndpointCreateInput {
 
 type Mutation {
   createMockInput(data: MockEndpointCreateInput!, userId: String!): MockEndpoint!
+  removeUser: User!
   signupUser(data: UserCreateInput): User!
 }
 
 type Query {
-  getUserWithMockEndpoints(data: UserGetInput!): User
+  getUser(data: UserGetInput): User
 }
 
 type User {
