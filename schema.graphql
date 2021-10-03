@@ -9,13 +9,13 @@ scalar DateTime
 
 type MockEndpoint {
   charset: String!
+  endpointName: String!
   httpHeaders: String!
   httpMethod: String!
   httpResponseBody: String!
   httpStatus: Int!
   id: Int!
   responseContentType: String!
-  responseName: String!
   timeout: Int!
   urlPath: String!
   userId: String!
@@ -23,23 +23,28 @@ type MockEndpoint {
 
 input MockEndpointCreateInput {
   charset: String!
+  endpointName: String!
   httpHeaders: String!
   httpMethod: String!
   httpResponseBody: String!
   httpStatus: Int!
   responseContentType: String!
-  responseName: String!
   timeout: Int!
   urlPath: String!
 }
 
+input MockEndpointGetInput {
+  id: Int!
+}
+
 type Mutation {
-  createMockInput(data: MockEndpointCreateInput!, userId: String!): MockEndpoint!
+  createMockEndpoint(data: MockEndpointCreateInput!, userId: String!): MockEndpoint!
   removeUser: User!
   signupUser(data: UserCreateInput): User!
 }
 
 type Query {
+  getMockEndpoint(data: MockEndpointGetInput): MockEndpoint
   getUser(data: UserGetInput): User
 }
 
