@@ -31,14 +31,17 @@ declare global {
 export interface NexusGenInputs {
   MockEndpointCreateInput: { // input type
     charset: string; // String!
+    endpointName: string; // String!
     httpHeaders: string; // String!
     httpMethod: string; // String!
     httpResponseBody: string; // String!
     httpStatus: number; // Int!
     responseContentType: string; // String!
-    responseName: string; // String!
     timeout: number; // Int!
     urlPath: string; // String!
+  }
+  MockEndpointGetInput: { // input type
+    id: number; // Int!
   }
   UserCreateInput: { // input type
     id?: string | null; // String
@@ -64,13 +67,13 @@ export interface NexusGenScalars {
 export interface NexusGenObjects {
   MockEndpoint: { // root type
     charset: string; // String!
+    endpointName: string; // String!
     httpHeaders: string; // String!
     httpMethod: string; // String!
     httpResponseBody: string; // String!
     httpStatus: number; // Int!
     id: number; // Int!
     responseContentType: string; // String!
-    responseName: string; // String!
     timeout: number; // Int!
     urlPath: string; // String!
     userId: string; // String!
@@ -97,23 +100,24 @@ export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 export interface NexusGenFieldTypes {
   MockEndpoint: { // field return type
     charset: string; // String!
+    endpointName: string; // String!
     httpHeaders: string; // String!
     httpMethod: string; // String!
     httpResponseBody: string; // String!
     httpStatus: number; // Int!
     id: number; // Int!
     responseContentType: string; // String!
-    responseName: string; // String!
     timeout: number; // Int!
     urlPath: string; // String!
     userId: string; // String!
   }
   Mutation: { // field return type
-    createMockInput: NexusGenRootTypes['MockEndpoint']; // MockEndpoint!
+    createMockEndpoint: NexusGenRootTypes['MockEndpoint']; // MockEndpoint!
     removeUser: NexusGenRootTypes['User']; // User!
     signupUser: NexusGenRootTypes['User']; // User!
   }
   Query: { // field return type
+    getMockEndpoint: NexusGenRootTypes['MockEndpoint'] | null; // MockEndpoint
     getUser: NexusGenRootTypes['User'] | null; // User
   }
   User: { // field return type
@@ -127,23 +131,24 @@ export interface NexusGenFieldTypes {
 export interface NexusGenFieldTypeNames {
   MockEndpoint: { // field return type name
     charset: 'String'
+    endpointName: 'String'
     httpHeaders: 'String'
     httpMethod: 'String'
     httpResponseBody: 'String'
     httpStatus: 'Int'
     id: 'Int'
     responseContentType: 'String'
-    responseName: 'String'
     timeout: 'Int'
     urlPath: 'String'
     userId: 'String'
   }
   Mutation: { // field return type name
-    createMockInput: 'MockEndpoint'
+    createMockEndpoint: 'MockEndpoint'
     removeUser: 'User'
     signupUser: 'User'
   }
   Query: { // field return type name
+    getMockEndpoint: 'MockEndpoint'
     getUser: 'User'
   }
   User: { // field return type name
@@ -156,7 +161,7 @@ export interface NexusGenFieldTypeNames {
 
 export interface NexusGenArgTypes {
   Mutation: {
-    createMockInput: { // args
+    createMockEndpoint: { // args
       data: NexusGenInputs['MockEndpointCreateInput']; // MockEndpointCreateInput!
       userId: string; // String!
     }
@@ -165,6 +170,9 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
+    getMockEndpoint: { // args
+      data?: NexusGenInputs['MockEndpointGetInput'] | null; // MockEndpointGetInput
+    }
     getUser: { // args
       data?: NexusGenInputs['UserGetInput'] | null; // UserGetInput
     }

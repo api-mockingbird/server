@@ -16,6 +16,7 @@ import { NexusGenObjects } from './generated/nexus';
 import {
   createMockEndpoint,
   getMockEndpointsByUserId,
+  getMockEndpointById,
 } from './service/mock-endpoint';
 import { createUser, deleteUserById, getUserById } from './service/user';
 import { encode } from './utils/jwt';
@@ -42,7 +43,7 @@ const MockEndpoint = objectType({
   definition(t) {
     t.nonNull.int('id');
     t.nonNull.string('userId');
-    t.nonNull.string('responseName');
+    t.nonNull.string('endpointName');
     t.nonNull.string('httpMethod');
     t.nonNull.string('urlPath');
     t.nonNull.int('httpStatus');
@@ -100,6 +101,18 @@ const Query = queryType({
         }
       },
     });
+
+    t.field('getMockEndpoint', {
+      type: MockEndpoint,
+      args: {
+        data: arg({ type: MockEndpointGetInput }),
+      },
+      resolve: (parent, args, { db }: Context) => {
+        // auth
+        console.log(args);
+        return getMockEndpointById(db, args.data!.id);
+      },
+    });
   },
 });
 
@@ -125,7 +138,7 @@ const Mutation = mutationType({
       },
     });
 
-    t.nonNull.field('createMockInput', {
+    t.nonNull.field('createMockEndpoint', {
       type: MockEndpoint,
       args: {
         data: nonNull(arg({ type: MockEndpointCreateInput })),
@@ -156,7 +169,7 @@ const UserCreateInput = inputObjectType({
 const MockEndpointCreateInput = inputObjectType({
   name: 'MockEndpointCreateInput',
   definition(t) {
-    t.nonNull.string('responseName');
+    t.nonNull.string('endpointName');
     t.nonNull.string('httpMethod');
     t.nonNull.string('urlPath');
     t.nonNull.int('httpStatus');
@@ -165,6 +178,13 @@ const MockEndpointCreateInput = inputObjectType({
     t.nonNull.string('httpHeaders');
     t.nonNull.string('httpResponseBody');
     t.nonNull.int('timeout');
+  },
+});
+
+const MockEndpointGetInput = inputObjectType({
+  name: 'MockEndpointGetInput',
+  definition(t) {
+    t.nonNull.int('id');
   },
 });
 
@@ -178,6 +198,7 @@ export const schema = makeSchema({
     UserGetInput,
     UserCreateInput,
     MockEndpointCreateInput,
+    MockEndpointGetInput,
   ],
   outputs: {
     schema: __dirname + '/../schema.graphql',

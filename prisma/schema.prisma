@@ -18,7 +18,7 @@ model MockEndpoint {
   id                  Int    @id @default(autoincrement())
   user                User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId              String
-  responseName        String
+  endpointName        String
   httpMethod          String
   urlPath             String
   httpStatus          Int

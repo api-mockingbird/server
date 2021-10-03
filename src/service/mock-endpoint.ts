@@ -19,3 +19,13 @@ export const createMockEndpoint = (
 export const getMockEndpointsByUserId = (db: PrismaClient, userId: string) => {
   return getUserById(db, userId).mockEndpoints();
 };
+
+export const getMockEndpointById = (db: PrismaClient, id: number) => {
+  try {
+    return db.mockEndpoint.findUnique({
+      where: { id },
+    });
+  } catch (e) {
+    throw e;
+  }
+};
