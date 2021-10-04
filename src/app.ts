@@ -5,13 +5,13 @@ import path from 'path';
 
 import indexRouter from './routes/index';
 import usersRouter from './routes/users';
-import { NexusGenObjects } from './generated/nexus';
+import { User } from './types';
 import { authenticateRequest } from './auth';
 
 declare global {
   namespace Express {
     interface Request {
-      user: NexusGenObjects['User'] | null;
+      user: User | null;
     }
   }
 }

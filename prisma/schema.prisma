@@ -19,7 +19,7 @@ model MockEndpoint {
   user                User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId              String
   endpointName        String
-  httpMethod          String
+  httpMethod          HttpMethod
   urlPath             String
   httpStatus          Int
   responseContentType String
@@ -27,4 +27,13 @@ model MockEndpoint {
   httpHeaders         String @default("")
   httpResponseBody    String @default("")
   timeout             Int    @default(0)
+}
+
+enum HttpMethod {
+  GET
+  POST
+  PUT
+  PATCH
+  DELETE
+  OPTIONS
 }

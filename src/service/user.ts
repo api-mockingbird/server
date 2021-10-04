@@ -1,10 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 
-import { NexusGenInputs } from '../generated/nexus';
+import { UserCreateInput } from '../types';
 
 export const createUser = (
   db: PrismaClient,
-  data: NexusGenInputs['UserCreateInput'] | null | undefined,
+  data: UserCreateInput | null | undefined,
 ) => {
   return db.user.create({
     data: {

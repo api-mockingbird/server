@@ -2,6 +2,7 @@ import { DateTimeResolver } from 'graphql-scalars';
 import {
   arg,
   asNexusMethod,
+  enumType,
   inputObjectType,
   makeSchema,
   mutationType,
@@ -12,7 +13,7 @@ import {
 } from 'nexus';
 
 import { Context } from './context';
-import { NexusGenObjects } from './generated/nexus';
+import { User as UserInterface, MockEndpointCreateInput } from './types';
 import {
   createMockEndpoint,
   getMockEndpointsByUserId,
@@ -44,7 +45,7 @@ const MockEndpoint = objectType({
     t.nonNull.int('id');
     t.nonNull.string('userId');
     t.nonNull.string('endpointName');
-    t.nonNull.string('httpMethod');
+    t.nonNull.field('httpMethod', { type: HttpMethod });
     t.nonNull.string('urlPath');
     t.nonNull.int('httpStatus');
     t.nonNull.string('responseContentType');
@@ -72,7 +73,7 @@ const Query = queryType({
           return user;
         };
 
-        const setAccessToken = (user: NexusGenObjects['User']) => {
+        const setAccessToken = (user: UserInterface) => {
           let accessToken;
 
           try {
@@ -107,7 +108,7 @@ const Query = queryType({
       args: {
         data: arg({ type: MockEndpointGetInput }),
       },
-      resolve: (parent, args, { db }: Context) => {
+      resolve: (_, args, { db }: Context) => {
         // auth
         console.log(args);
         return getMockEndpointById(db, args.data!.id);
@@ -145,10 +146,15 @@ const Mutation = mutationType({
         userId: nonNull(stringArg()),
       },
       resolve: (_, { userId, data }, { db }: Context) => {
-        return createMockEndpoint(db, userId, data);
+        return createMockEndpoint(db, userId, data as MockEndpointCreateInput);
       },
     });
   },
+});
+
+const HttpMethod = enumType({
+  name: 'HttpMethod',
+  members: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 });
 
 const UserGetInput = inputObjectType({
@@ -170,7 +176,7 @@ const MockEndpointCreateInput = inputObjectType({
   name: 'MockEndpointCreateInput',
   definition(t) {
     t.nonNull.string('endpointName');
-    t.nonNull.string('httpMethod');
+    t.nonNull.field('httpMethod', { type: HttpMethod });
     t.nonNull.string('urlPath');
     t.nonNull.int('httpStatus');
     t.nonNull.string('responseContentType');
@@ -199,6 +205,7 @@ export const schema = makeSchema({
     UserCreateInput,
     MockEndpointCreateInput,
     MockEndpointGetInput,
+    HttpMethod,
   ],
   outputs: {
     schema: __dirname + '/../schema.graphql',

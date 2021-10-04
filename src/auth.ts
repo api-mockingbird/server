@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { decode } from './utils/jwt';
-import { NexusGenObjects } from './generated/nexus';
+import { User } from './types';
 
 export const authenticateRequest = (
   req: Request,
@@ -25,7 +25,7 @@ export const authenticateRequest = (
 
   const decoded = decode(accessToken);
 
-  req.user = decoded as NexusGenObjects['User'];
+  req.user = decoded as User;
 
   next();
 };

@@ -33,7 +33,7 @@ export interface NexusGenInputs {
     charset: string; // String!
     endpointName: string; // String!
     httpHeaders: string; // String!
-    httpMethod: string; // String!
+    httpMethod: NexusGenEnums['HttpMethod']; // HttpMethod!
     httpResponseBody: string; // String!
     httpStatus: number; // Int!
     responseContentType: string; // String!
@@ -53,6 +53,7 @@ export interface NexusGenInputs {
 }
 
 export interface NexusGenEnums {
+  HttpMethod: "DELETE" | "GET" | "OPTIONS" | "PATCH" | "POST" | "PUT"
 }
 
 export interface NexusGenScalars {
@@ -69,7 +70,7 @@ export interface NexusGenObjects {
     charset: string; // String!
     endpointName: string; // String!
     httpHeaders: string; // String!
-    httpMethod: string; // String!
+    httpMethod: NexusGenEnums['HttpMethod']; // HttpMethod!
     httpResponseBody: string; // String!
     httpStatus: number; // Int!
     id: number; // Int!
@@ -95,14 +96,14 @@ export interface NexusGenUnions {
 
 export type NexusGenRootTypes = NexusGenObjects
 
-export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
+export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnums
 
 export interface NexusGenFieldTypes {
   MockEndpoint: { // field return type
     charset: string; // String!
     endpointName: string; // String!
     httpHeaders: string; // String!
-    httpMethod: string; // String!
+    httpMethod: NexusGenEnums['HttpMethod']; // HttpMethod!
     httpResponseBody: string; // String!
     httpStatus: number; // Int!
     id: number; // Int!
@@ -133,7 +134,7 @@ export interface NexusGenFieldTypeNames {
     charset: 'String'
     endpointName: 'String'
     httpHeaders: 'String'
-    httpMethod: 'String'
+    httpMethod: 'HttpMethod'
     httpResponseBody: 'String'
     httpStatus: 'Int'
     id: 'Int'
@@ -189,7 +190,7 @@ export type NexusGenObjectNames = keyof NexusGenObjects;
 
 export type NexusGenInputNames = keyof NexusGenInputs;
 
-export type NexusGenEnumNames = never;
+export type NexusGenEnumNames = keyof NexusGenEnums;
 
 export type NexusGenInterfaceNames = never;
 

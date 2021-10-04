@@ -1,12 +1,12 @@
 import { PrismaClient } from '@prisma/client';
 
-import { NexusGenInputs } from '../generated/nexus';
 import { getUserById } from './user';
+import { MockEndpointCreateInput } from '../types';
 
 export const createMockEndpoint = (
   db: PrismaClient,
   userId: string,
-  data: NexusGenInputs['MockEndpointCreateInput'],
+  data: MockEndpointCreateInput,
 ) => {
   return db.mockEndpoint.create({
     data: {

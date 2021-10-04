@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 
-import { NexusGenObjects } from '../generated/nexus';
+import { User } from '../types';
 
-export const encode = (user: NexusGenObjects['User']) => {
+export const encode = (user: User) => {
   try {
     return jwt.sign(user, process.env.JWT_SECRET_KEY!, {
       expiresIn: '1h',
