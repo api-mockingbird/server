@@ -66,7 +66,7 @@ const Query = queryType({
       args: {
         data: arg({ type: UserGetInput }),
       },
-      resolve: async (_, __, { db, req, res }: Context) => {
+      resolve: async (_, __, { db, user, res }: Context) => {
         const createTempUser = async () => {
           const user = await createUser(db, {
             id: undefined,
@@ -91,7 +91,7 @@ const Query = queryType({
           });
         };
 
-        if (!req.user) {
+        if (!user) {
           const newTempUser = await createTempUser();
           setAccessToken(newTempUser);
 
@@ -99,7 +99,7 @@ const Query = queryType({
         }
 
         try {
-          return getUserById(db, req.user.id);
+          return getUserById(db, user.id);
         } catch (e) {
           throw e;
         }
@@ -112,7 +112,6 @@ const Query = queryType({
         data: arg({ type: MockEndpointGetInput }),
       },
       resolve: (_, args, { db }: Context) => {
-        // auth
         return getMockEndpointById(db, args.data!.id);
       },
     });
@@ -133,8 +132,8 @@ const Mutation = mutationType({
 
     t.nonNull.field('removeUser', {
       type: User,
-      resolve: async (_, __, { db, req, res }: Context) => {
-        const deletedUser = await deleteUserById(db, req.user!.id);
+      resolve: async (_, __, { db, user, res }: Context) => {
+        const deletedUser = await deleteUserById(db, user!.id);
         res.clearCookie('accessToken');
 
         return deletedUser;
