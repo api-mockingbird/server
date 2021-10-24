@@ -1,13 +1,13 @@
+import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
+import { ApolloServer } from 'apollo-server-express';
+import cors from 'cors';
+import dotenv from 'dotenv';
 import { NextFunction, Request, Response } from 'express';
 import http from 'http';
 import createError, { HttpError } from 'http-errors';
-import { ApolloServer } from 'apollo-server-express';
-import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
-import cors from 'cors';
-import dotenv from 'dotenv';
 
 import app from './app';
-import { context } from './context';
+import { createContext } from './context';
 import { schema } from './schema';
 
 if (process.env.NODE_ENV !== 'production') {
@@ -21,15 +21,8 @@ async function startServer() {
   const httpServer = http.createServer(app);
   const server = new ApolloServer({
     schema,
-    context,
+    context: createContext,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-    formatError: (err) => {
-      if (process.env.NODE_ENV !== 'production') {
-        return err;
-      }
-
-      return new Error('Internal server error');
-    },
   });
   const graphqlCorsWhitelist = [process.env.CLIENT_BASE_URL!];
 
@@ -61,9 +54,9 @@ async function startServer() {
     res.status(err.status || 500);
   });
 
-  httpServer.listen(port, () => {
-    console.log(`server listening on port ${port}..`);
-  });
+  await httpServer.listen(port);
+
+  console.log(`server listening on port ${port}..`);
 }
 
 function normalizePort(val: string) {

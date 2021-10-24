@@ -1,31 +1,23 @@
-import { Request, Response, NextFunction } from 'express';
+import { AuthenticationError } from 'apollo-server-errors';
 
-import { decode } from './utils/jwt';
+import db from './db';
+import { getUserById } from './service/user';
 import { User } from './types';
+import { decode } from './utils/jwt';
 
-export const authenticateRequest = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { originalUrl, cookies } = req;
+export const authenticate = async (
+  accessToken: string,
+): Promise<User | Error> => {
+  try {
+    const decoded = decode(accessToken) as User;
+    const user = await getUserById(db, decoded.id);
 
-  // add conditions for subdomains
-  if (originalUrl !== '/graphql') {
-    return next();
+    if (!user || decoded.id !== user.id) {
+      throw new AuthenticationError('Unauthenticated');
+    }
+
+    return decoded;
+  } catch (e) {
+    throw e;
   }
-
-  const { accessToken } = cookies;
-
-  if (!accessToken) {
-    req.user = null;
-
-    return next();
-  }
-
-  const decoded = decode(accessToken);
-
-  req.user = decoded as User;
-
-  next();
 };
