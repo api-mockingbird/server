@@ -30,26 +30,29 @@ type MockEndpoint {
   userId: String!
 }
 
-input MockEndpointCreateInput {
+input MockEndpointGetInput {
+  id: Int!
+}
+
+input MockEndpointInput {
   charset: String!
   endpointName: String!
   httpHeaders: String!
   httpMethod: HttpMethod!
   httpResponseBody: String!
   httpStatus: Int!
+  id: Int
   responseContentType: String!
   timeout: Int!
   urlPath: String!
 }
 
-input MockEndpointGetInput {
-  id: Int!
-}
-
 type Mutation {
-  createMockEndpoint(data: MockEndpointCreateInput!, userId: String!): MockEndpoint!
+  createMockEndpoint(data: MockEndpointInput!, userId: String!): MockEndpoint!
+  removeMockEndpoint(data: Int!): MockEndpoint!
   removeUser: User!
   signupUser(data: UserCreateInput): User!
+  updateMockEndpoint(data: MockEndpointInput!, userId: String!): MockEndpoint!
 }
 
 type Query {

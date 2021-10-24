@@ -4,6 +4,7 @@ import {
   asNexusMethod,
   enumType,
   inputObjectType,
+  intArg,
   makeSchema,
   mutationType,
   nonNull,
@@ -13,13 +14,15 @@ import {
 } from 'nexus';
 
 import { Context } from './context';
-import { User as UserInterface, MockEndpointCreateInput } from './types';
 import {
   createMockEndpoint,
-  getMockEndpointsByUserId,
   getMockEndpointById,
+  getMockEndpointsByUserId,
+  removeMockEndpoint,
+  updateMockEndpoint,
 } from './service/mock-endpoint';
 import { createUser, deleteUserById, getUserById } from './service/user';
+import { MockEndpointInput, User as UserInterface } from './types';
 import { encode } from './utils/jwt';
 
 export const DateTime = asNexusMethod(DateTimeResolver, 'date');
@@ -110,7 +113,6 @@ const Query = queryType({
       },
       resolve: (_, args, { db }: Context) => {
         // auth
-        console.log(args);
         return getMockEndpointById(db, args.data!.id);
       },
     });
@@ -142,11 +144,32 @@ const Mutation = mutationType({
     t.nonNull.field('createMockEndpoint', {
       type: MockEndpoint,
       args: {
-        data: nonNull(arg({ type: MockEndpointCreateInput })),
+        data: nonNull(arg({ type: MockEndpointInput })),
         userId: nonNull(stringArg()),
       },
       resolve: (_, { userId, data }, { db }: Context) => {
-        return createMockEndpoint(db, userId, data as MockEndpointCreateInput);
+        return createMockEndpoint(db, userId, data as MockEndpointInput);
+      },
+    });
+
+    t.nonNull.field('updateMockEndpoint', {
+      type: MockEndpoint,
+      args: {
+        data: nonNull(arg({ type: MockEndpointInput })),
+        userId: nonNull(stringArg()),
+      },
+      resolve: (_, { userId, data }, { db }: Context) => {
+        return updateMockEndpoint(db, userId, data as MockEndpointInput);
+      },
+    });
+
+    t.nonNull.field('removeMockEndpoint', {
+      type: MockEndpoint,
+      args: {
+        data: nonNull(intArg()),
+      },
+      resolve: (_, { data }, { db }: Context) => {
+        return removeMockEndpoint(db, data);
       },
     });
   },
@@ -172,9 +195,10 @@ const UserCreateInput = inputObjectType({
   },
 });
 
-const MockEndpointCreateInput = inputObjectType({
-  name: 'MockEndpointCreateInput',
+const MockEndpointInput = inputObjectType({
+  name: 'MockEndpointInput',
   definition(t) {
+    t.int('id');
     t.nonNull.string('endpointName');
     t.nonNull.field('httpMethod', { type: HttpMethod });
     t.nonNull.string('urlPath');
@@ -203,7 +227,7 @@ export const schema = makeSchema({
     Mutation,
     UserGetInput,
     UserCreateInput,
-    MockEndpointCreateInput,
+    MockEndpointInput,
     MockEndpointGetInput,
     HttpMethod,
   ],

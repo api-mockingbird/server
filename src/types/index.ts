@@ -18,7 +18,8 @@ export interface MockEndpoint {
   userId: string;
 }
 
-export interface MockEndpointCreateInput {
+export interface MockEndpointInput {
+  id?: number;
   charset: Charset;
   endpointName: string;
   httpHeaders: string;

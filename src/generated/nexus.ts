@@ -29,19 +29,20 @@ declare global {
 }
 
 export interface NexusGenInputs {
-  MockEndpointCreateInput: { // input type
+  MockEndpointGetInput: { // input type
+    id: number; // Int!
+  }
+  MockEndpointInput: { // input type
     charset: string; // String!
     endpointName: string; // String!
     httpHeaders: string; // String!
     httpMethod: NexusGenEnums['HttpMethod']; // HttpMethod!
     httpResponseBody: string; // String!
     httpStatus: number; // Int!
+    id?: number | null; // Int
     responseContentType: string; // String!
     timeout: number; // Int!
     urlPath: string; // String!
-  }
-  MockEndpointGetInput: { // input type
-    id: number; // Int!
   }
   UserCreateInput: { // input type
     id?: string | null; // String
@@ -114,8 +115,10 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     createMockEndpoint: NexusGenRootTypes['MockEndpoint']; // MockEndpoint!
+    removeMockEndpoint: NexusGenRootTypes['MockEndpoint']; // MockEndpoint!
     removeUser: NexusGenRootTypes['User']; // User!
     signupUser: NexusGenRootTypes['User']; // User!
+    updateMockEndpoint: NexusGenRootTypes['MockEndpoint']; // MockEndpoint!
   }
   Query: { // field return type
     getMockEndpoint: NexusGenRootTypes['MockEndpoint'] | null; // MockEndpoint
@@ -145,8 +148,10 @@ export interface NexusGenFieldTypeNames {
   }
   Mutation: { // field return type name
     createMockEndpoint: 'MockEndpoint'
+    removeMockEndpoint: 'MockEndpoint'
     removeUser: 'User'
     signupUser: 'User'
+    updateMockEndpoint: 'MockEndpoint'
   }
   Query: { // field return type name
     getMockEndpoint: 'MockEndpoint'
@@ -163,11 +168,18 @@ export interface NexusGenFieldTypeNames {
 export interface NexusGenArgTypes {
   Mutation: {
     createMockEndpoint: { // args
-      data: NexusGenInputs['MockEndpointCreateInput']; // MockEndpointCreateInput!
+      data: NexusGenInputs['MockEndpointInput']; // MockEndpointInput!
       userId: string; // String!
+    }
+    removeMockEndpoint: { // args
+      data: number; // Int!
     }
     signupUser: { // args
       data?: NexusGenInputs['UserCreateInput'] | null; // UserCreateInput
+    }
+    updateMockEndpoint: { // args
+      data: NexusGenInputs['MockEndpointInput']; // MockEndpointInput!
+      userId: string; // String!
     }
   }
   Query: {
