@@ -3,10 +3,9 @@ import express from 'express';
 import logger from 'morgan';
 import path from 'path';
 
-import indexRouter from './routes/index';
-import usersRouter from './routes/users';
-import { User } from './types';
 import { authenticateRequest } from './auth';
+import indexRouter from './routes/index';
+import { User } from './types';
 
 declare global {
   namespace Express {
@@ -26,6 +25,5 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(authenticateRequest);
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
 export default app;
