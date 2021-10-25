@@ -36,7 +36,13 @@ export interface UserCreateInput {
   isTemp?: boolean | null;
 }
 
-type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'OPTIONS';
+export type HttpMethod =
+  | 'GET'
+  | 'POST'
+  | 'PUT'
+  | 'PATCH'
+  | 'DELETE'
+  | 'OPTIONS';
 type HttpStatus =
   | 200
   | 201
