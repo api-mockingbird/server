@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { UserInputError } from 'apollo-server-errors';
 
 import { HttpMethod, MockEndpointInput } from '../types';
-import { getUserById } from './user';
+import { getUserById } from './user.service';
 
 export const createMockEndpoint = async (
   db: PrismaClient,
@@ -86,10 +86,10 @@ export const getMockEndpointByRequestInfo = (
   }
 };
 
-export const removeMockEndpoint = (db: PrismaClient, data: number) => {
+export const removeMockEndpointById = (db: PrismaClient, id: number) => {
   try {
     return db.mockEndpoint.delete({
-      where: { id: data },
+      where: { id },
     });
   } catch (e) {
     throw e;

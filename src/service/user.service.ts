@@ -1,5 +1,7 @@
-import { UserCreateInput } from '../types';
 import { PrismaClient } from '@prisma/client';
+
+import { UserCreateInput } from '../types';
+import { TWELVE_HOURS } from '../constants';
 
 export const createUser = (
   db: PrismaClient,
@@ -27,10 +29,25 @@ export const getUserById = (db: PrismaClient, id: string) => {
   }
 };
 
-export const deleteUserById = (db: PrismaClient, id: string) => {
+export const removeUserById = (db: PrismaClient, id: string) => {
   try {
     return db.user.delete({
       where: { id },
+    });
+  } catch (e) {
+    throw e;
+  }
+};
+
+export const removeOldTempUsers = (db: PrismaClient) => {
+  try {
+    return db.user.deleteMany({
+      where: {
+        isTemp: true,
+        createdAt: {
+          lt: new Date(Date.now() - TWELVE_HOURS),
+        },
+      },
     });
   } catch (e) {
     throw e;

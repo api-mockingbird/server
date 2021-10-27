@@ -5,8 +5,11 @@ import dotenv from 'dotenv';
 import { NextFunction, Request, Response } from 'express';
 import http from 'http';
 import createError, { HttpError } from 'http-errors';
+import cron from 'node-cron';
+import shell from 'shelljs';
 
 import app from './app';
+import { TWELVE_HOURS } from './constants';
 import { createContext } from './context';
 import { schema } from './schema';
 
@@ -54,6 +57,15 @@ async function startServer() {
     res.status(err.status || 500);
 
     res.send(err);
+  });
+
+  cron.schedule('0 */12 * * *', () => {
+    try {
+      console.log('scheduler running at minute 0 past every 12th hour..');
+      shell.exec('node utils/removeOldTempUsers.js');
+    } catch (error) {
+      console.error(error);
+    }
   });
 
   await httpServer.listen(port);

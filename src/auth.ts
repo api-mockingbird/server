@@ -1,7 +1,7 @@
 import { AuthenticationError } from 'apollo-server-errors';
 
 import db from './db';
-import { getUserById } from './service/user';
+import { getUserById } from './service/user.service';
 import { User } from './types';
 import { decode } from './utils/jwt';
 

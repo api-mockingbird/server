@@ -19,8 +19,10 @@
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^8.5.1",
     "nexus": "^1.1.0",
+    "node-cron": "^3.0.0",
     "pg": "^8.7.1",
-    "pg-hstore": "^2.3.4"
+    "pg-hstore": "^2.3.4",
+    "shelljs": "^0.8.4"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.2",
@@ -30,6 +32,8 @@
     "@types/jsonwebtoken": "^8.5.5",
     "@types/morgan": "^1.9.3",
     "@types/node": "^16.9.4",
+    "@types/node-cron": "^3.0.0",
+    "@types/shelljs": "^0.8.9",
     "dotenv": "^10.0.0",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.12",

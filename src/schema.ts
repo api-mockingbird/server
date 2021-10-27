@@ -18,10 +18,14 @@ import {
   createMockEndpoint,
   getMockEndpointById,
   getMockEndpointsByUserId,
-  removeMockEndpoint,
+  removeMockEndpointById,
   updateMockEndpoint,
-} from './service/mock-endpoint';
-import { createUser, deleteUserById, getUserById } from './service/user';
+} from './service/mock-endpoint.service';
+import {
+  createUser,
+  removeUserById,
+  getUserById,
+} from './service/user.service';
 import { MockEndpointInput, User as UserInterface } from './types';
 import { encode } from './utils/jwt';
 
@@ -133,10 +137,10 @@ const Mutation = mutationType({
     t.nonNull.field('removeUser', {
       type: User,
       resolve: async (_, __, { db, user, res }: Context) => {
-        const deletedUser = await deleteUserById(db, user!.id);
+        const removedUser = await removeUserById(db, user!.id);
         res.clearCookie('accessToken');
 
-        return deletedUser;
+        return removedUser;
       },
     });
 
@@ -168,7 +172,7 @@ const Mutation = mutationType({
         data: nonNull(intArg()),
       },
       resolve: (_, { data }, { db }: Context) => {
-        return removeMockEndpoint(db, data);
+        return removeMockEndpointById(db, data);
       },
     });
   },
