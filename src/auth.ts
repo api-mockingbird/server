@@ -16,6 +16,8 @@ export const authenticate = async (
       throw new AuthenticationError('Unauthenticated');
     }
 
+    // temp and expired
+
     return decoded;
   } catch (e) {
     throw e;
