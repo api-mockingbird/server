@@ -1,5 +1,6 @@
 import { AuthenticationError } from 'apollo-server-errors';
 
+import { ONE_HOUR } from './constants';
 import db from './db';
 import { getUserById } from './service/user.service';
 import { User } from './types';
@@ -10,16 +11,27 @@ export const authenticate = async (
 ): Promise<User | Error> => {
   try {
     const decoded = decode(accessToken) as User;
-    const user = await getUserById(db, decoded.id);
 
-    if (!user || decoded.id !== user.id) {
-      throw new AuthenticationError('Unauthenticated');
+    if (
+      decoded.isTemp &&
+      new Date(decoded.createdAt) < new Date(Date.now() - ONE_HOUR)
+    ) {
+      throw new Error();
     }
 
-    // temp and expired
+    const user = await getUserById(db, decoded.id);
+
+    if (
+      !user ||
+      decoded.id !== user.id ||
+      (user.isTemp &&
+        new Date(user.createdAt) < new Date(Date.now() - ONE_HOUR))
+    ) {
+      throw new Error();
+    }
 
     return decoded;
   } catch (e) {
-    throw e;
+    throw new AuthenticationError('Unauthenticated');
   }
 };

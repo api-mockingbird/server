@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { AuthenticationError } from 'apollo-server-errors';
 import { Request, Response } from 'express';
 
 import { authenticate } from './auth';
@@ -34,6 +35,10 @@ export const createContext = async ({
 
       context.user = authenticatedUser;
     } catch (e) {
+      if (e instanceof AuthenticationError) {
+        res.clearCookie('accessToken');
+      }
+
       throw e;
     }
   }
