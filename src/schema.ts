@@ -13,6 +13,7 @@ import {
   stringArg,
 } from 'nexus';
 
+import { ONE_HOUR } from './constants';
 import { Context } from './context';
 import {
   createMockEndpoint,
@@ -91,7 +92,7 @@ const Query = queryType({
 
           res.cookie('accessToken', accessToken, {
             httpOnly: true,
-            maxAge: 1000 * 60 * 60, // 1 hour
+            maxAge: ONE_HOUR,
           });
         };
 

@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 
 import { UserCreateInput } from '../types';
-import { TWELVE_HOURS } from '../constants';
+import { TWENTY_FOUR_HOURS } from '../constants';
 
 export const createUser = (
   db: PrismaClient,
@@ -45,7 +45,7 @@ export const removeOldTempUsers = (db: PrismaClient) => {
       where: {
         isTemp: true,
         createdAt: {
-          lt: new Date(Date.now() - TWELVE_HOURS),
+          lt: new Date(Date.now() - TWENTY_FOUR_HOURS),
         },
       },
     });

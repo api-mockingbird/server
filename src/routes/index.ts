@@ -4,6 +4,8 @@ import { HttpMethod } from '../types';
 import sleep from '../utils/sleep';
 import express, { NextFunction, Request, Response } from 'express';
 import { BadRequest, MethodNotAllowed, NotFound } from 'http-errors';
+import { getUserById } from '../service/user.service';
+import { ONE_HOUR } from '../constants';
 
 const router = express.Router();
 
@@ -39,7 +41,14 @@ router.all('/*', async (req: Request, res: Response, next: NextFunction) => {
     return next(new NotFound());
   }
 
-  console.log(mockEndpoint);
+  const user = await getUserById(db, mockEndpoint.userId);
+
+  if (
+    user!.isTemp &&
+    new Date(user!.createdAt) < new Date(Date.now() - ONE_HOUR)
+  ) {
+    return next(new NotFound());
+  }
 
   res.status(mockEndpoint.httpStatus);
 

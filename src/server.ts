@@ -9,7 +9,6 @@ import cron from 'node-cron';
 import shell from 'shelljs';
 
 import app from './app';
-import { TWELVE_HOURS } from './constants';
 import { createContext } from './context';
 import { schema } from './schema';
 
@@ -59,10 +58,10 @@ async function startServer() {
     res.send(err);
   });
 
-  cron.schedule('0 */12 * * *', () => {
+  cron.schedule('0 4 * * *', () => {
     try {
-      console.log('scheduler running at minute 0 past every 12th hour..');
       shell.exec('node utils/removeOldTempUsers.js');
+      console.log('removed temp users older than one day.');
     } catch (error) {
       console.error(error);
     }
