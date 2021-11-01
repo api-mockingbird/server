@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { AuthenticationError } from 'apollo-server-errors';
 import { Request, Response } from 'express';
 
-import { authenticate } from './auth';
+import { authenticate } from './utils/auth';
 import db from './db';
 import { User } from './types';
 

@@ -1,10 +1,10 @@
 import { AuthenticationError } from 'apollo-server-errors';
 
-import { ONE_HOUR } from './constants';
-import db from './db';
-import { getUserById } from './service/user.service';
-import { User } from './types';
-import { decode } from './utils/jwt';
+import { ONE_HOUR } from '../constants';
+import db from '../db';
+import { getUserById } from '../service/user.service';
+import { User } from '../types';
+import { decode } from './jwt';
 
 export const authenticate = async (
   accessToken: string,
