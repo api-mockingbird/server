@@ -1,11 +1,12 @@
-import db from '../db';
-import { getMockEndpointByRequestInfo } from '../service/mock-endpoint.service';
-import { HttpMethod } from '../types';
-import sleep from '../utils/sleep';
 import express, { NextFunction, Request, Response } from 'express';
 import { BadRequest, MethodNotAllowed, NotFound } from 'http-errors';
-import { getUserById } from '../service/user.service';
+
 import { ONE_HOUR } from '../constants';
+import db from '../db';
+import { getMockEndpointByRequestInfo } from '../service/mock-endpoint.service';
+import { getUserById } from '../service/user.service';
+import { HttpMethod } from '../types';
+import sleep from '../utils/sleep';
 
 const router = express.Router();
 
@@ -13,7 +14,7 @@ router.all('/*', async (req: Request, res: Response, next: NextFunction) => {
   const { params, subdomains, method } = req;
   const urlPath = `/${params['0']}`;
   const subdomain = subdomains[0];
-  const availableMethods = ['GET', 'POST', 'PUT', 'PATCH', 'OPTIONS'];
+  const availableMethods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
 
   if (subdomains.length > 1) {
     return next(new BadRequest());
