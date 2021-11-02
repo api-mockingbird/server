@@ -17,6 +17,10 @@ const limiter = rateLimit({
     const { originalUrl, subdomains } = req;
     const subdomain = subdomains[0];
 
+    if (process.env.NODE_ENV !== 'production') {
+      return 500;
+    }
+
     if (
       (subdomain === 'www' || subdomain === 'app') &&
       originalUrl === '/graphql'
@@ -28,9 +32,7 @@ const limiter = rateLimit({
   },
 });
 
-if (process.env.NODE_ENV === 'production') {
-  router.use(limiter);
-}
+router.use(limiter);
 
 router.all('/*', async (req: Request, res: Response, next: NextFunction) => {
   const { params, subdomains, method } = req;

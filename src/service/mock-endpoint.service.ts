@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { UserInputError } from 'apollo-server-errors';
 
+import { TooManyMockEndpointsError } from '../errors';
 import { HttpMethod, MockEndpointInput } from '../types';
 import { getUserById } from './user.service';
 
@@ -10,15 +11,24 @@ export const createMockEndpoint = async (
   data: MockEndpointInput,
 ) => {
   try {
-    const existingMockEndpoint = await db.mockEndpoint.findFirst({
-      where: {
-        userId,
-        httpMethod: data.httpMethod,
-        urlPath: data.urlPath,
-      },
+    const mockEndpoints = await db.mockEndpoint.findMany({
+      where: { userId },
     });
 
-    if (existingMockEndpoint) {
+    if (mockEndpoints.length >= 10) {
+      throw new TooManyMockEndpointsError(
+        'Number of endpoints has reached the limit',
+      );
+    }
+
+    if (
+      mockEndpoints.some((endpoint) => {
+        return (
+          endpoint.httpMethod === data.httpMethod &&
+          endpoint.urlPath === data.urlPath
+        );
+      })
+    ) {
       throw new UserInputError('Mock endpoint already exists');
     }
   } catch (e) {
