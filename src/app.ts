@@ -26,10 +26,7 @@ const limiter = rateLimit({
     const { originalUrl, subdomains } = req;
     const subdomain = subdomains[0];
 
-    if (
-      (subdomain === 'www' || subdomain === 'app') &&
-      originalUrl === '/graphql'
-    ) {
+    if (subdomain === 'api' && originalUrl === '/graphql') {
       return 100;
     }
 
