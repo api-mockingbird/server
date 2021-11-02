@@ -1,7 +1,8 @@
 import express, { NextFunction, Request, Response } from 'express';
+import rateLimit from 'express-rate-limit';
 import { BadRequest, MethodNotAllowed, NotFound } from 'http-errors';
 
-import { ONE_HOUR } from '../constants';
+import { FIVE_MINUTES, ONE_HOUR } from '../constants';
 import db from '../db';
 import { getMockEndpointByRequestInfo } from '../service/mock-endpoint.service';
 import { getUserById } from '../service/user.service';
@@ -10,12 +11,33 @@ import sleep from '../utils/sleep';
 
 const router = express.Router();
 
+const limiter = rateLimit({
+  windowMs: FIVE_MINUTES,
+  max: (req) => {
+    const { originalUrl, subdomains } = req;
+    const subdomain = subdomains[0];
+
+    if (
+      (subdomain === 'www' || subdomain === 'app') &&
+      originalUrl === '/graphql'
+    ) {
+      return 100;
+    }
+
+    return 30;
+  },
+});
+
+if (process.env.NODE_ENV === 'production') {
+  router.use(limiter);
+}
+
 router.all('/*', async (req: Request, res: Response, next: NextFunction) => {
   const { params, subdomains, method } = req;
   const urlPath = `/${params['0']}`;
   const subdomain = subdomains[0];
   const availableMethods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
-
+  console.log(urlPath);
   if (subdomains.length > 1) {
     return next(new BadRequest());
   }
