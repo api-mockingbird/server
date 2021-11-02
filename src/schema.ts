@@ -24,8 +24,8 @@ import {
 } from './service/mock-endpoint.service';
 import {
   createUser,
-  removeUserById,
   getUserById,
+  removeUserById,
 } from './service/user.service';
 import { MockEndpointInput, User as UserInterface } from './types';
 import { encode } from './utils/jwt';
