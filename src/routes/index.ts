@@ -37,7 +37,7 @@ router.all('/*', async (req: Request, res: Response, next: NextFunction) => {
   const urlPath = `/${params['0']}`;
   const subdomain = subdomains[0];
   const availableMethods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
-  console.log(urlPath);
+
   if (subdomains.length > 1) {
     return next(new BadRequest());
   }
