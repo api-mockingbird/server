@@ -1,6 +1,7 @@
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import rateLimit from 'express-rate-limit';
+import { TooManyRequests } from 'http-errors';
 import logger from 'morgan';
 import path from 'path';
 
@@ -27,10 +28,18 @@ const limiter = rateLimit({
     const subdomain = subdomains[0];
 
     if (subdomain === 'api' && originalUrl === '/graphql') {
-      return 100;
+      return 120;
     }
 
     return 30;
+  },
+  handler: (req, res, next) => {
+    if (req.method === 'OPTIONS') return next();
+
+    res.setHeader('Access-Control-Allow-Origin', process.env.CLIENT_BASE_URL!);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+    next(new TooManyRequests());
   },
 });
 

@@ -16,9 +16,7 @@ export const createMockEndpoint = async (
     });
 
     if (mockEndpoints.length >= 10) {
-      throw new TooManyMockEndpointsError(
-        'Number of endpoints has reached the limit',
-      );
+      throw new TooManyMockEndpointsError();
     }
 
     if (
