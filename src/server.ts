@@ -3,6 +3,7 @@ import { ApolloServer } from 'apollo-server-express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { NextFunction, Request, Response } from 'express';
+import depthLimit from 'graphql-depth-limit';
 import http from 'http';
 import createError, { HttpError } from 'http-errors';
 import cron from 'node-cron';
@@ -25,6 +26,7 @@ async function startServer() {
     schema,
     context: createContext,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    validationRules: [depthLimit(2)],
   });
   const graphqlCorsWhitelist = [process.env.CLIENT_BASE_URL!];
 
