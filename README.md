@@ -1,5 +1,11 @@
 # Mockingbird
 
+```
+touch .env (refer to .env.sample)
+npm i
+npm run dev
+```
+
 ### Introduction
 
 Mockingbird mocks your API endpoints. Use it while developing your application's frontend. No more fuss creating mock data or mock servers!
