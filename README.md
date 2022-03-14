@@ -16,7 +16,7 @@ Authentication is not yet implemented.
 
 <center><img src="/README.assets/baseurl.jpg" width="500px" /></center>
 A base URL with a subdomain of your ID or a random unique identifier will be given.
-Click on the copy icon to copy URL.
+Click on the copy icon to copy your base URL.
 
 #### 2. Register Endpoint
 
